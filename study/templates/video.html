@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Students Portal</title>
+
+    <!-- Bootstrap core CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <style>
+    
+    .container{
+      margin-top: 10px;
+    }
+
+    </style>
+  </head>
+  <body>
+
+
+
+
+ 
+        <div class="container">
+          <div class="row">
+            {% for entry in entries %}
+            <div class="col-md-4">           
+                  
+                  <div class="d-flex justify-content-between align-items-center">
+                    <iframe src="{{entry[2]}}" frameborder="0" width="100%"
+                        allow=" accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                     
+
+                  </div>
+                  <p class="card-text">Date: {{ entry[1] }}</p>
+                  <hr style="width:98%;opacity: 1;margin: 0px;">
+                  <div class="btn-group"></div>
+                                        
+                  
+                
+            
+            </div>          
+            {% endfor %}
+          </div>
+        </div>
+     
+  
+  
+    
+
+</body>
+</html>

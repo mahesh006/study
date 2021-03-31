@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Teachers Platform</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style type="text/css">
+            * {
+              box-sizing: border-box;
+            }
+            button[type=submit] {
+              background-color: skyblue;
+              color: white;
+              width:100%;
+              padding: 12px 20px;
+              margin: 8px 0;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              float: right;
+              font-size: 16px;
+              font-weight: bold;
+            }
+
+            button[type=submit]:hover {
+              background-color:rgb(65, 65, 206);
+            }
+            textarea {
+              width: 100%;
+              padding: 12px 20px;
+              margin: 8px 0;
+              box-sizing: border-box;
+              border: 2px solid blue;
+              border-radius: 4px;
+            }
+            #streamButton {
+              background-color: skyblue;
+              color: white;
+              width:100%;
+              margin: 8px 0;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              float: right;
+              font-size: 16px;
+              font-weight: bold;
+              text-align:center
+            }
+            #streamButton:hover {
+              background-color: rgb(65, 65, 206);
+            }
+            #messages{
+                display: none;
+            }
+            .footer {
+              position: fixed;
+              left: 0;
+              bottom: 0;
+              background-color: blue;
+              text-align: center;
+              border-radius: 10px;
+            }
+            .footer a {
+              float: left;
+              display: block;
+              color: white;
+              text-align: center;
+              padding: 0px;
+              margin:10px;
+              text-decoration: none;
+              font-size: 17px;
+            }
+            .card {
+              margin: 0 auto; /* Added */
+              float: none; /* Added */
+              margin-bottom: 10px; /* Added */
+              margin-top: 20px;
+            }
+
+        </style>
+    </head>
+    <body>
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Class Notes Generator</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+      </nav>
+      
+      <div class="card w-75">
+        <div class="container">
+          <div class="form-row justify-content-center">
+            <div class="text-center ">
+              <button id="streamButton" class="btn btn-secondary" onclick="asyncCall()">Record</button>
+            </div>
+          </div>         
+          
+          <form method="POST">
+            <div class="form-row justify-content-center">
+              <div class="col-sm-10">
+                <textarea name="content" id="content" class="form-control"></textarea>
+              </div>
+            
+            
+              <div class="col-sm-10">
+                <textarea name="content1" id="content1" class="form-control"></textarea>
+              </div>
+              <div class="col-sm-10">
+                <button type="submit" class="btn btn-secondary">Submit</button>
+              </div>
+            </div>
+          </form>            
+        </div>
+      </div>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        
+        <script>
+                       
+        const accessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFVUTRNemhDUVVWQk1rTkJNemszUTBNMlFVVTRRekkyUmpWQ056VTJRelUxUTBVeE5EZzFNUSJ9.eyJodHRwczovL3BsYXRmb3JtLnN5bWJsLmFpL3VzZXJJZCI6IjUwMzI1MjMyOTU4ODMyNjQiLCJpc3MiOiJodHRwczovL2RpcmVjdC1wbGF0Zm9ybS5hdXRoMC5jb20vIiwic3ViIjoiZWs0ZVUxSk93bnI3dGZpYkRXYjQyZGxxd0ZqSlBES01AY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vcGxhdGZvcm0ucmFtbWVyLmFpIiwiaWF0IjoxNjE3MTIxMzcwLCJleHAiOjE2MTcyMDc3NzAsImF6cCI6ImVrNGVVMUpPd25yN3RmaWJEV2I0MmRscXdGakpQREtNIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.jBWSqj6V4lFoTdlrxlS3UNDqH_4IqRc2zxjSgQvb06eYRN9inErlH_sPIecsavloGwThBJgnkzul4gpc6qbsNaROU3-KrHSG7sfdICYlVIImSlzFkxpZqN_b-fFZF4lKrAtoRmxjgSgmvC8FXVjbVv02d_dUHtF_9_JuxSbN-6ZSVKOjGs3BLfqxm6ocETt2PHhgHd-pxAnbgyPcXUJ99esgcAmSgYzgwTjHjQAfaOptqvYk4e59saEaywNzM0ayj0BXgz1rVB0dUMrHPNZngobqsa-8m8xpJICP7Uae5pPVW0BQwUzYH6_SJURhWBMHiriMtv8a9bsiZnbp5sS0Lw';
+        const uniqueMeetingId = btoa("example");
+        const symblEndpoint = `wss://api.symbl.ai/v1/realtime/insights/${uniqueMeetingId}?access_token=${accessToken}`;
+
+        const ws = new WebSocket(symblEndpoint);
+
+        async function asyncCall() {  
+           
+          // Fired when a message is received from the WebSocket server
+          ws.onmessage = (event) => {
+            // You can find the conversationId in event.message.data.conversationId;
+            const data = JSON.parse(event.data);
+            if (data.type === 'message' && data.message.hasOwnProperty('data')) {
+              console.log('conversationId', data.message.data.conversationId);
+              //document.getElementById("status").innerHTML = "Started. conversationId -" + data.message.data.conversationId;
+            }
+            if (data.type === 'message_response') {
+              for (let message of data.messages) {
+                console.log('Transcript (more accurate): ', message.payload.content);
+                document.getElementById("content").innerHTML += message.payload.content;               
+              
+              }
+            }
+            if (data.type === 'topic_response') {
+              let arr = [];
+              for (let topic of data.topics) {
+                console.log('Topic detected: ', topic.phrases);
+                arr.push(" "+topic.phrases);
+              }
+              document.getElementById("content1").innerHTML = "["+arr+"]";
+            }
+            if (data.type === 'insight_response') {
+              for (let insight of data.insights) {
+                console.log('Insight detected: ', insight.payload.content);
+              }
+            }
+            if (data.type === 'message' && data.message.hasOwnProperty('punctuated')) {
+              console.log('Live transcript (less accurate): ', data.message.punctuated.transcript)
+              
+              
+            }
+            console.log(`Response type: ${data.type}. Object: `, data);
+          };
+
+          // Fired when the WebSocket closes unexpectedly due to an error or lost connetion
+          ws.onerror  = (err) => {
+            console.error(err);
+          };
+
+          // Fired when the WebSocket connection has been closed
+          ws.onclose = (event) => {
+            console.info('Connection to websocket closed');
+            //document.getElementById("status").innerHTML = "Stopped";
+          };
+
+          // Fired when the connection succeeds.
+          ws.onopen = (event) => {
+            ws.send(JSON.stringify({
+              type: 'start_request',
+              meetingTitle: 'Websockets How-to', // Conversation name
+              insightTypes: ['question', 'action_item'], // Will enable insight generation
+              config: {
+                confidenceThreshold: 0.5,
+                languageCode: 'en-US',
+                speechRecognition: {
+                  encoding: 'LINEAR16',
+                  sampleRateHertz: 44100,
+                }
+              },
+              speaker: {
+                userId: 'example@symbl.ai',
+                name: 'Example Sample',
+              }
+            }));
+          };
+
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
+          /**
+           * The callback function which fires after a user gives the browser permission to use
+           * the computer's microphone. Starts a recording session which sends the audio stream to
+           * the WebSocket endpoint for processing.
+           */
+          const handleSuccess = (stream) => {
+            const AudioContext = window.AudioContext;
+            const context = new AudioContext();
+            const source = context.createMediaStreamSource(stream);
+            const processor = context.createScriptProcessor(1024, 1, 1);
+            const gainNode = context.createGain();
+            source.connect(gainNode);
+            gainNode.connect(processor);
+            processor.connect(context.destination);
+            processor.onaudioprocess = (e) => {
+              // convert to 16-bit payload
+              const inputData = e.inputBuffer.getChannelData(0) || new Float32Array(this.bufferSize);
+              const targetBuffer = new Int16Array(inputData.length);
+              for (let index = inputData.length; index > 0; index--) {
+                  targetBuffer[index] = 32767 * Math.min(1, inputData[index]);
+              }
+              // Send audio stream to websocket.
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.send(targetBuffer.buffer);
+              }
+            };
+          };
+
+          handleSuccess(stream);
+        }
+        </script>
+
+    </body>
+</html>
